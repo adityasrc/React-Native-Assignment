@@ -1,31 +1,12 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { createStaticNavigation } from '@react-navigation/native';
+import AuthStack from 'src/navigation/auth-navigator';
+
+const Navigation = createStaticNavigation(AuthStack);
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Ready!</Text>
-      <Text style={styles.subtitle}>Start building your app here</Text>
-      <StatusBar style="auto" />
-    </View>
+    <Navigation/>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: "700",
-    color: "#F97316",
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: "#6B7280",
-  },
-});
+
