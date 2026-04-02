@@ -1,7 +1,7 @@
 import { createStaticNavigation } from '@react-navigation/native';
-import AuthStack from 'src/navigation/auth-navigator';
+import RootStack from 'src/navigation/root-navigator';
 
-const Navigation = createStaticNavigation(AuthStack);
+const Navigation = createStaticNavigation(RootStack);
 
 export default function App() {
   return (
