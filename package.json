@@ -1,0 +1,44 @@
+{
+  "name": "readyai-assignment",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "start": "expo start --dev-client",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "prebuild:clean": "npx expo prebuild --clean",
+    "build:android:preview": "eas build --profile preview --platform android",
+    "build:ios:preview": "eas build --profile preview --platform ios",
+    "lint": "eslint . --ext .ts,.tsx"
+  },
+  "dependencies": {
+    "@expo-google-fonts/inter": "^0.4.1",
+    "@expo/vector-icons": "15.1.1",
+    "@gorhom/bottom-sheet": "^5.2.6",
+    "@react-navigation/bottom-tabs": "^7.7.2",
+    "@react-navigation/native": "^7.1.28",
+    "@react-navigation/native-stack": "^7.6.2",
+    "@shopify/flash-list": "2.0.2",
+    "expo": "^55.0.0",
+    "expo-dev-client": "~55.0.18",
+    "expo-font": "~55.0.4",
+    "expo-haptics": "~55.0.9",
+    "expo-image": "~55.0.6",
+    "expo-splash-screen": "~55.0.12",
+    "expo-status-bar": "~55.0.4",
+    "react": "19.2.0",
+    "react-native": "0.83.2",
+    "react-native-gesture-handler": "~2.30.0",
+    "react-native-reanimated": "4.3.0",
+    "react-native-safe-area-context": "~5.6.2",
+    "react-native-screens": "~4.23.0",
+    "react-native-worklets": "0.8.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@types/react": "~19.2.10",
+    "babel-plugin-module-resolver": "^5.0.2",
+    "typescript": "~5.9.2"
+  },
+  "private": true
+}

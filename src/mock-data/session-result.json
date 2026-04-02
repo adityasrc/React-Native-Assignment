@@ -1,0 +1,21 @@
+{
+  "questionId": "q1",
+  "questionText": "API latency is variable & app is sluggish. How do you design UI safely?",
+  "companyName": "PhonePe",
+  "smartSummary": {
+    "whatWorkedWell": [
+      "Add your bullet points here based on the Figma"
+    ],
+    "overallTakeaways": [
+      "Add your bullet points here based on the Figma"
+    ]
+  },
+  "keyMoments": [
+    {
+      "timestamp": "01:37",
+      "description": "Add key moment description here",
+      "type": "positive"
+    }
+  ],
+  "audioDurationSeconds": 312
+}

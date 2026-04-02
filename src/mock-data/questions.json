@@ -1,0 +1,12 @@
+[
+  {
+    "id": "q1",
+    "questionNumber": 1,
+    "companyId": "1",
+    "companyName": "PhonePe",
+    "companyLogoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/PhonePe_Logo.svg/512px-PhonePe_Logo.svg.png",
+    "text": "API latency is variable & app is sluggish. How do you design UI safely?",
+    "durationMinutes": 2,
+    "completedTodayCount": 2312
+  }
+]
