@@ -1,286 +1,115 @@
-import React, { useRef, useMemo, useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  StatusBar,
-  Platform,
 } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-import { FlashList, type ListRenderItem } from "@shopify/flash-list";
+import { FlashList } from "@shopify/flash-list";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Image } from "expo-image";
 import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import type { RootStackParamList } from "@/navigation/types";
+
+import { QuestionCard } from "../components/question-card";
+
 import { colors, palette } from "@/theme/colors";
 import { spacing } from "@/theme/spacing";
 import { typography } from "@/theme/typography";
-import { SafeAreaView } from "react-native-safe-area-context";
+import type { RootStackParamList } from "@/navigation/types";
 import questionsData from "@/mock-data/questions.json";
 
-interface Question {
-  id: string;
-  questionNumber: number;
-  companyId: string;
-  companyName: string;
-  companyLogoUrl: string;
-  text: string;
-  durationMinutes: number;
-  completedTodayCount: number;
-  difficulty?: string;
-  topic?: string;
-}
+type NavigationProps = NativeStackNavigationProp<RootStackParamList>;
 
-type HomeNavProp = NativeStackNavigationProp<RootStackParamList>;
+import type { Question } from "../types";
+
 const questions = questionsData as Question[];
 
-const getTopic = (index: number) =>
-  ["Arrays", "Graphs", "DP", "Trees"][index % 4];
-const getDifficulty = (index: number) =>
-  index % 3 === 0 ? "Hard" : index % 2 === 0 ? "Medium" : "Easy";
-
-const getCardBg = (index: number) =>
-  index === 0
-    ? colors.backgroundCard1 || palette.orange10
-    : index === 1
-      ? colors.backgroundCard2 || palette.orange30
-      : colors.cardBackground;
-const getNumberBg = (index: number) =>
-  index === 0
-    ? colors.numberBadge1 || colors.primary
-    : index === 1
-      ? colors.numberBadge2 || colors.primary
-      : colors.numberBadgeDefault || colors.textSecondary;
-
-const QuestionCard = React.memo(
-  ({
-    item,
-    index,
-    onPress,
-  }: {
-    item: Question;
-    index: number;
-    onPress: () => void;
-  }) => {
-    const isLeft = index % 2 === 0;
-    const difficulty = item.difficulty || getDifficulty(index);
-    const topic = item.topic || getTopic(index);
-
-    return (
-      <View style={styles.cardWrapper}>
-        {index === 0 && (
-          <View
-            style={[
-              styles.startBadge,
-              isLeft ? styles.badgeLeft : styles.badgeRight,
-            ]}
-          >
-            <Text style={styles.startBadgeText}>START</Text>
-          </View>
-        )}
-
-        <TouchableOpacity
-          style={[
-            styles.cardPill,
-            { backgroundColor: getCardBg(index) },
-            isLeft ? styles.alignLeft : styles.alignRight,
-          ]}
-          activeOpacity={0.8}
-          onPress={onPress}
-        >
-          <View style={styles.cardLeftContent}>
-            <Image
-              source={{ uri: item.companyLogoUrl }}
-              style={styles.companyLogo}
-              cachePolicy="memory-disk"
-            />
-            <View>
-              <Text style={styles.companyName} numberOfLines={1}>
-                {item.companyName}
-              </Text>
-              <Text style={styles.metaText}>
-                {difficulty} • {item.durationMinutes}m • {topic}
-              </Text>
-            </View>
-          </View>
-
-          <View
-            style={[
-              styles.numberCircle,
-              { backgroundColor: getNumberBg(index) },
-            ]}
-          >
-            <Text style={styles.numberText}>{item.questionNumber}</Text>
-          </View>
-        </TouchableOpacity>
-
-        {item.completedTodayCount > 0 && (
-          <View style={styles.socialProofContainer}>
-            <View style={styles.dottedLine} />
-            <Text style={styles.socialProofText}>
-              🔥 {(item.completedTodayCount / 1000).toFixed(1)}k solved today
-            </Text>
-            <View style={styles.dottedLine} />
-          </View>
-        )}
-      </View>
-    );
-  },
-);
-
 export default function HomeScreen() {
-  const navigation = useNavigation<HomeNavProp>();
-  const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = useMemo(() => ["55%"], []);
-  const [picked, setPicked] = useState<Question | null>(null);
+  const navigation = useNavigation<NavigationProps>();
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const openSheet = useCallback((item: Question) => {
-    setPicked(item);
-    bottomSheetRef.current?.expand();
+  const handleCardPress = useCallback((id: string) => {
+    setSelectedId((prev) => (prev === id ? null : id));
   }, []);
 
-  const goToResult = useCallback(() => {
-    bottomSheetRef.current?.close();
-    navigation.navigate("SessionResult" as never);
-  }, [navigation]);
-
-  const ListHeader = useCallback(
-    () => (
-      <View style={styles.headerContainer}>
-        <View style={styles.topBar}>
-          <Text style={styles.logoText}>Ready!</Text>
-          <View style={styles.topBarRight}>
-            <View style={styles.streakBadge}>
-              <Text style={styles.badgeText}>🔥 7 Day</Text>
-            </View>
-            <View style={styles.xpBadge}>
-              <Text style={styles.badgeText}>⚡ 120 XP</Text>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.practiceBanner}>
-          <Text style={styles.muscleEmoji}>🎯</Text>
-          <View style={styles.bannerTextContainer}>
-            <Text style={styles.bannerSubText}>
-              Practicing Top 50 Questions for{" "}
-            </Text>
-            <Text style={styles.bannerMainText}>Big Tech Companies</Text>
-          </View>
-          <Feather
-            name="chevron-right"
-            size={20}
-            color={colors.textSecondary}
-          />
-        </View>
-      </View>
-    ),
-    [],
+  const handleNavigation = useCallback(
+    (route: keyof RootStackParamList) => {
+      const parent = navigation.getParent<NavigationProps>();
+      if (parent) {
+        parent.navigate(route);
+      } else {
+        navigation.navigate(route);
+      }
+    },
+    [navigation],
   );
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <GestureHandlerRootView style={styles.root}>
-        <StatusBar
-          barStyle="dark-content"
-          backgroundColor={colors.background}
-        />
+    <SafeAreaView style={styles.root} edges={["top"]}>
+      <View style={styles.topBar}>
+        <Text style={styles.logoText}>Ready!</Text>
+        <View style={styles.topBarRight}>
+          <View style={styles.xpBadge}>
+            <Text style={styles.xpText}>⚡ 8</Text>
+          </View>
+          <TouchableOpacity style={styles.hamburgerButton} activeOpacity={0.7}>
+            <Feather name="menu" size={22} color={colors.textPrimary} />
+          </TouchableOpacity>
+        </View>
+      </View>
 
+      <View style={styles.listContainer}>
         <FlashList
           data={questions}
-          renderItem={({ item, index }) => (
-            <QuestionCard
-              item={item}
-              index={index}
-              onPress={() => openSheet(item)}
-            />
-          )}
-          // @ts-ignore
-          estimatedItemSize={120}
           keyExtractor={(item) => item.id}
-          ListHeaderComponent={ListHeader}
-          contentContainerStyle={styles.listContent}
+          // @ts-ignore
+          estimatedItemSize={100}
           showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+          ListHeaderComponent={
+            <TouchableOpacity style={styles.practiceBanner} activeOpacity={0.8}>
+              <Text style={styles.bannerEmoji}>💪</Text>
+              <View style={styles.bannerTextContainer}>
+                <Text style={styles.bannerSubText}>Practicing Top 50 Questions for</Text>
+                <Text style={styles.bannerMainText}>Big Tech Companies</Text>
+              </View>
+              <Feather name="chevron-down" size={20} color={colors.textSecondary} />
+            </TouchableOpacity>
+          }
+          ItemSeparatorComponent={() => <View style={{ height: spacing.m }} />}
+          renderItem={({ item, index }) => {
+            const isSelected = selectedId === item.id;
+            return (
+              <QuestionCard
+                item={item}
+                index={index}
+                isSelected={isSelected}
+                onPress={() => handleCardPress(item.id)}
+                onFeedbackPress={() => handleNavigation("SessionResult")}
+              />
+            );
+          }}
         />
-
-        <BottomSheet
-          ref={bottomSheetRef}
-          index={-1}
-          snapPoints={snapPoints}
-          enablePanDownToClose
-          backgroundStyle={styles.sheetBg}
-        >
-          <BottomSheetView style={styles.sheetContent}>
-            {picked && (
-              <>
-                <View style={styles.sheetHeaderMeta}>
-                  <Image
-                    source={{ uri: picked.companyLogoUrl }}
-                    style={styles.sheetLogoSmall}
-                  />
-                  <Text style={styles.sheetCompanyText}>
-                    {picked.companyName} • {getTopic(picked.questionNumber)}
-                  </Text>
-                </View>
-
-                <Text style={styles.sheetQuestion}>{picked.text}</Text>
-
-                <View style={styles.sheetTagsRow}>
-                  <View style={styles.sheetTag}>
-                    <Text style={styles.sheetTagText}>
-                      ⏱️ {picked.durationMinutes} mins
-                    </Text>
-                  </View>
-                  <View style={styles.sheetTag}>
-                    <Text style={styles.sheetTagText}>
-                      📊 {getDifficulty(picked.questionNumber)}
-                    </Text>
-                  </View>
-                  <View style={styles.sheetTag}>
-                    <Text style={styles.sheetTagText}>👥 3.2k attempts</Text>
-                  </View>
-                </View>
-
-                <TouchableOpacity
-                  style={styles.feedbackButton}
-                  onPress={goToResult}
-                  activeOpacity={0.85}
-                >
-                  <Text style={styles.feedbackText}>PRACTICE NOW</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={styles.aiButton}
-                  activeOpacity={0.6}
-                  disabled
-                >
-                  <Text style={styles.aiButtonText}>🎧 AI VS AI (LISTEN)</Text>
-                </TouchableOpacity>
-              </>
-            )}
-          </BottomSheetView>
-        </BottomSheet>
-      </GestureHandlerRootView>
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.background },
-  listContent: {
-    paddingHorizontal: spacing.l,
-    paddingBottom: 100,
-    paddingTop: spacing.m,
+  root: {
+    flex: 1,
+    backgroundColor: colors.background,
   },
-  headerContainer: { marginBottom: spacing.l },
   topBar: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: spacing.m,
+    paddingHorizontal: spacing.l,
+    paddingTop: spacing.xs,
+    paddingBottom: spacing.s,
+    backgroundColor: colors.background,
   },
   logoText: {
     fontSize: typography.sizes.xxl,
@@ -290,198 +119,60 @@ const styles = StyleSheet.create({
   topBarRight: {
     flexDirection: "row",
     alignItems: "center",
-    gap: spacing.xs,
-  },
-  streakBadge: {
-    backgroundColor: palette.orange10,
-    paddingHorizontal: spacing.s,
-    paddingVertical: 4,
-    borderRadius: 999,
+    gap: spacing.s,
   },
   xpBadge: {
-    backgroundColor: colors.successLight,
-    paddingHorizontal: spacing.s,
-    paddingVertical: 4,
+    backgroundColor: palette.green50,
+    paddingHorizontal: spacing.m,
+    paddingVertical: 6,
     borderRadius: 999,
   },
-  badgeText: {
-    fontSize: typography.sizes.xs,
+  xpText: {
+    fontSize: typography.sizes.s,
     fontFamily: typography.fonts.inter.bold,
-    color: colors.textPrimary,
+    color: palette.white,
+  },
+  hamburgerButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: palette.gray20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  listContainer: {
+    flex: 1,
+    paddingHorizontal: spacing.l,
+  },
+  scrollContent: {
+    paddingBottom: 120,
+    paddingTop: spacing.xs,
   },
   practiceBanner: {
-    backgroundColor: colors.backgroundSecondary,
-    borderWidth: 1,
-    borderColor: colors.border,
+    backgroundColor: palette.orange10,
     borderRadius: spacing.cardRadius,
-    paddingVertical: spacing.m,
-    paddingHorizontal: spacing.l,
+    borderWidth: 1.5,
+    borderColor: palette.orange30,
+    padding: spacing.m,
     flexDirection: "row",
     alignItems: "center",
+    marginBottom: spacing.l,
   },
-  muscleEmoji: { fontSize: typography.sizes.xl, marginRight: spacing.s },
-  bannerTextContainer: { flex: 1 },
+  bannerEmoji: {
+    fontSize: 24,
+    marginRight: spacing.s,
+  },
+  bannerTextContainer: {
+    flex: 1,
+  },
   bannerSubText: {
     fontSize: typography.sizes.xs,
     color: colors.textSecondary,
     fontFamily: typography.fonts.inter.normal,
   },
   bannerMainText: {
-    fontSize: typography.sizes.m,
+    fontSize: 15,
     fontFamily: typography.fonts.inter.bold,
     color: colors.textPrimary,
-  },
-  cardWrapper: { marginBottom: spacing.m, position: "relative" },
-  cardPill: {
-    width: "92%",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderRadius: 50,
-    paddingVertical: 6,
-    paddingLeft: spacing.m,
-    paddingRight: 6,
-    elevation: 2,
-    shadowColor: palette.black,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 3,
-  },
-  alignLeft: { alignSelf: "flex-start" },
-  alignRight: { alignSelf: "flex-end" },
-  cardLeftContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
-    marginRight: spacing.s,
-  },
-  companyLogo: {
-    width: 28,
-    height: 28,
-    borderRadius: 6,
-    marginRight: spacing.s,
-  },
-  companyName: {
-    fontSize: typography.sizes.m,
-    fontFamily: typography.fonts.inter.bold,
-    color: colors.textPrimary,
-  },
-  metaText: {
-    fontSize: 10,
-    color: colors.textSecondary,
-    fontFamily: typography.fonts.inter.normal,
-    marginTop: 2,
-  },
-  numberCircle: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  numberText: {
-    color: colors.textInverse,
-    fontSize: typography.sizes.l,
-    fontFamily: typography.fonts.inter.bold,
-  },
-  startBadge: {
-    position: "absolute",
-    top: -10,
-    backgroundColor: colors.primary,
-    paddingHorizontal: spacing.m,
-    paddingVertical: 6,
-    borderRadius: 999,
-    zIndex: 10,
-  },
-  badgeLeft: { right: 40 },
-  badgeRight: { left: 40 },
-  startBadgeText: {
-    color: colors.textInverse,
-    fontFamily: typography.fonts.inter.bold,
-    fontSize: 11,
-    letterSpacing: 0.8,
-  },
-  socialProofContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: spacing.m,
-    paddingHorizontal: spacing.l,
-  },
-  socialProofText: {
-    fontSize: 11,
-    color: colors.textSecondary,
-    marginHorizontal: spacing.s,
-    fontFamily: typography.fonts.inter.semiBold,
-  },
-  dottedLine: {
-    flex: 1,
-    height: 1,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderStyle: "dashed",
-  },
-  sheetBg: { backgroundColor: colors.background },
-  sheetContent: { padding: spacing.xl, flex: 1 },
-  sheetHeaderMeta: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: spacing.s,
-    gap: spacing.xs,
-  },
-  sheetLogoSmall: { width: 16, height: 16, borderRadius: 4 },
-  sheetCompanyText: {
-    fontSize: typography.sizes.s,
-    color: colors.textSecondary,
-    fontFamily: typography.fonts.inter.medium,
-  },
-  sheetQuestion: {
-    fontSize: typography.sizes.l,
-    fontFamily: typography.fonts.inter.bold,
-    color: colors.textPrimary,
-    marginBottom: spacing.m,
-    lineHeight: 28,
-  },
-  sheetTagsRow: {
-    flexDirection: "row",
-    gap: spacing.s,
-    marginBottom: spacing.xl,
-    flexWrap: "wrap",
-  },
-  sheetTag: {
-    backgroundColor: colors.backgroundSecondary,
-    paddingHorizontal: spacing.s,
-    paddingVertical: 6,
-    borderRadius: 8,
-  },
-  sheetTagText: {
-    fontSize: 12,
-    color: colors.textSecondary,
-    fontFamily: typography.fonts.inter.medium,
-  },
-  feedbackButton: {
-    backgroundColor: colors.primary,
-    borderRadius: spacing.buttonRadius,
-    paddingVertical: spacing.m,
-    alignItems: "center",
-    marginBottom: spacing.m,
-  },
-  feedbackText: {
-    color: colors.textInverse,
-    fontFamily: typography.fonts.inter.bold,
-    fontSize: typography.sizes.s,
-    letterSpacing: 1,
-  },
-  aiButton: {
-    backgroundColor: palette.gray80,
-    borderRadius: spacing.buttonRadius,
-    paddingVertical: spacing.m,
-    alignItems: "center",
-  },
-  aiButtonText: {
-    color: colors.textInverse,
-    fontFamily: typography.fonts.inter.bold,
-    fontSize: typography.sizes.s,
-    letterSpacing: 1,
   },
 });

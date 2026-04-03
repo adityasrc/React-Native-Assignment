@@ -11,10 +11,14 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import type { AuthStackParamList } from "@/navigation/types";
+import type { AuthStackParamList, RootStackParamList } from "@/navigation/types";
 import { colors } from "@/theme";
+import type { CompositeNavigationProp } from "@react-navigation/native";
 
-type LoginNavProp = NativeStackNavigationProp<AuthStackParamList, "Login">;
+type LoginNavProp = CompositeNavigationProp<
+  NativeStackNavigationProp<AuthStackParamList, "Login">,
+  NativeStackNavigationProp<RootStackParamList>
+>;
 
 const OTP_LENGTH = 6;
 
@@ -43,7 +47,7 @@ export default function LoginScreen() {
   };
 
   const handleContinue = () => {
-    navigation.navigate("Home" as any);
+    navigation.navigate("MainTabs");
   };
 
   return (

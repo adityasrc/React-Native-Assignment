@@ -9,7 +9,7 @@ const RootStack = createNativeStackNavigator({
     },
     screens: {
         Auth: AuthStack,
-        Home: HomeStack,
+        MainTabs: HomeStack,
         SessionResult: SessionResultScreen,
     },
 });

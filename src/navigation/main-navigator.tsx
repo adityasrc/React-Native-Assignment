@@ -1,6 +1,6 @@
 import { BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
-import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import HomeScreen from '@/features/home/screens/home-screen';
 import SettingsScreen from '@/features/settings/screens/settings-screen';
 import { colors, palette } from '@/theme/colors';
@@ -28,18 +28,27 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
             }
           };
 
+          const iconName: React.ComponentProps<typeof Feather>['name'] =
+            route.name === 'Home' ? 'home' : 'bar-chart-2';
+
           return (
             <TouchableOpacity
               key={route.key}
               onPress={onPress}
               style={styles.tabItem}
               activeOpacity={0.7}
+              accessible
+              accessibilityRole="tab"
+              accessibilityState={{ selected: isFocused }}
+              accessibilityLabel={route.name}
             >
-              {route.name === 'Home' ? (
-                <Feather name="home" size={24} color={isFocused ? colors.primary : colors.textSecondary} />
-              ) : (
-                <MaterialCommunityIcons name="presentation" size={26} color={isFocused ? colors.primary : colors.textSecondary} />
-              )}
+              <View style={[styles.iconWrapper, isFocused && styles.iconWrapperActive]}>
+                <Feather
+                  name={iconName}
+                  size={22}
+                  color={isFocused ? colors.primary : colors.textSecondary}
+                />
+              </View>
               <Text style={[styles.tabLabel, { color: isFocused ? colors.primary : colors.textSecondary }]}>
                 {route.name}
               </Text>
@@ -52,9 +61,12 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
         style={styles.storeContainer}
         activeOpacity={0.8}
         onPress={() => navigation.navigate('Store')}
+        accessible
+        accessibilityRole="tab"
+        accessibilityLabel="Store"
       >
         <View style={styles.storeCircleInner}>
-          <Feather name="shopping-bag" size={16} color={colors.background} />
+          <Feather name="shopping-bag" size={17} color={colors.textInverse} />
         </View>
         <Text style={[styles.tabLabel, { color: colors.textSecondary }]}>Store</Text>
       </TouchableOpacity>
@@ -71,50 +83,60 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    elevation: 0,
-    backgroundColor: 'transparent',
+    backgroundColor: palette.transparent,
   },
   pillContainer: {
     flexDirection: 'row',
     backgroundColor: colors.background,
-    borderRadius: 35,
-    height: 70,
-    width: '65%',
+    borderRadius: 40,
+    height: 72,
+    width: '68%',
     alignItems: 'center',
     justifyContent: 'space-evenly',
     borderWidth: 1,
     borderColor: colors.border,
-    elevation: 2,
+    elevation: 4,
     shadowColor: palette.black,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
   },
   storeContainer: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    backgroundColor: colors.backgroundSecondary,
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: colors.background,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
     borderColor: colors.border,
-    elevation: 2,
+    elevation: 4,
     shadowColor: palette.black,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
   },
   tabItem: {
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
+    gap: spacing.xxs,
+  },
+  iconWrapper: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconWrapperActive: {
+    backgroundColor: colors.primaryLight,
   },
   storeCircleInner: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: colors.textPrimary,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: spacing.xxs,
@@ -122,7 +144,6 @@ const styles = StyleSheet.create({
   tabLabel: {
     fontSize: typography.sizes.xs,
     fontFamily: typography.fonts.inter.medium,
-    marginTop: spacing.xxs,
   },
 });
 

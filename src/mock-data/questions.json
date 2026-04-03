@@ -6,6 +6,8 @@
     "companyName": "PhonePe",
     "companyLogoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/PhonePe_Logo.svg/512px-PhonePe_Logo.svg.png",
     "text": "API latency is variable & app is sluggish. How do you design UI safely?",
+    "difficulty": "Hard",
+    "topic": "Arrays",
     "durationMinutes": 2,
     "completedTodayCount": 2312
   },
@@ -16,18 +18,10 @@
     "companyName": "Amazon",
     "companyLogoUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg",
     "text": "Design a scalable notification system for millions of users.",
+    "difficulty": "Easy",
+    "topic": "Graphs",
     "durationMinutes": 3,
     "completedTodayCount": 0
-  },
-  {
-    "id": "q3",
-    "questionNumber": 3,
-    "companyId": "1",
-    "companyName": "PhonePe",
-    "companyLogoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/PhonePe_Logo.svg/512px-PhonePe_Logo.svg.png",
-    "text": "How would you handle payment failures gracefully in a fintech app?",
-    "durationMinutes": 2,
-    "completedTodayCount": 1847
   },
   {
     "id": "q4",
@@ -36,6 +30,8 @@
     "companyName": "Google",
     "companyLogoUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg",
     "text": "How do you optimize search result rendering for low-end devices?",
+    "difficulty": "Medium",
+    "topic": "DP",
     "durationMinutes": 3,
     "completedTodayCount": 0
   },
@@ -46,6 +42,8 @@
     "companyName": "Microsoft",
     "companyLogoUrl": "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg",
     "text": "Design an offline-first collaborative document editor.",
+    "difficulty": "Hard",
+    "topic": "Trees",
     "durationMinutes": 4,
     "completedTodayCount": 0
   }
