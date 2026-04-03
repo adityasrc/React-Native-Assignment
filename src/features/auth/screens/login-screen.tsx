@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { AuthStackParamList } from "@/navigation/types";
@@ -46,76 +47,81 @@ export default function LoginScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <View style={styles.inner}>
-        <View style={styles.headingRow}>
-          <Text style={styles.headingOrange}>Kickstart </Text>
-          <Text style={styles.headingBlack}>your journey</Text>
-        </View>
-
-        <Text style={styles.subtitle}>
-          We will send you an OTP to verify your number.
-        </Text>
-
-        <Text style={styles.label}>Phone number</Text>
-        <View style={styles.phoneRow}>
-          <View style={styles.countryCode}>
-            <Text style={styles.countryCodeText}>+91 ∨</Text>
-          </View>
-          <TextInput
-            style={styles.phoneInput}
-            value={phone}
-            onChangeText={setPhone}
-            keyboardType="number-pad"
-            maxLength={10}
-            placeholder="8812014288"
-            placeholderTextColor={colors.textDisabled}
-          />
-        </View>
-        <Text style={styles.hint}>
-          Please enter a valid 10-digit mobile number.
-        </Text>
-
-        <Text style={styles.label}>Enter the OTP</Text>
-        {/* YAHAN FIX KIYA HAI: Ab ye direct updated otpRow style use kar raha hai */}
-        <View style={styles.otpRow}>
-          {otp.map((digit, index) => (
-            <TextInput
-              key={index}
-              ref={(ref) => {
-                inputRefs.current[index] = ref;
-              }}
-              style={[styles.otpBox, digit ? styles.otpBoxFilled : null]}
-              value={digit}
-              onChangeText={(val) => handleOtpChange(val.slice(-1), index)}
-              onKeyPress={({ nativeEvent }) => {
-                if (nativeEvent.key === "Backspace") {
-                  handleOtpBackspace(digit, index);
-                }
-              }}
-              keyboardType="number-pad"
-              maxLength={1}
-              textAlign="center"
-            />
-          ))}
-        </View>
-      </View>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={handleContinue}
-        activeOpacity={0.85}
+    <SafeAreaView style={styles.safeArea}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <Text style={styles.buttonText}>Continue</Text>
-      </TouchableOpacity>
-    </KeyboardAvoidingView>
+        <View style={styles.inner}>
+          <View style={styles.headingRow}>
+            <Text style={styles.headingOrange}>Kickstart </Text>
+            <Text style={styles.headingBlack}>your journey</Text>
+          </View>
+
+          <Text style={styles.subtitle}>
+            We will send you an OTP to verify your number.
+          </Text>
+
+          <Text style={styles.label}>Phone number</Text>
+          <View style={styles.phoneRow}>
+            <View style={styles.countryCode}>
+              <Text style={styles.countryCodeText}>+91 ∨</Text>
+            </View>
+            <TextInput
+              style={styles.phoneInput}
+              value={phone}
+              onChangeText={setPhone}
+              keyboardType="number-pad"
+              maxLength={10}
+              placeholder="8812014288"
+              placeholderTextColor={colors.textDisabled}
+            />
+          </View>
+          <Text style={styles.hint}>
+            Please enter a valid 10-digit mobile number.
+          </Text>
+
+          <Text style={styles.label}>Enter the OTP</Text>
+          <View style={styles.otpRow}>
+            {otp.map((digit, index) => (
+              <TextInput
+                key={index}
+                ref={(ref) => {
+                  inputRefs.current[index] = ref;
+                }}
+                style={[styles.otpBox, digit ? styles.otpBoxFilled : null]}
+                value={digit}
+                onChangeText={(val) => handleOtpChange(val.slice(-1), index)}
+                onKeyPress={({ nativeEvent }) => {
+                  if (nativeEvent.key === "Backspace") {
+                    handleOtpBackspace(digit, index);
+                  }
+                }}
+                keyboardType="number-pad"
+                maxLength={1}
+                textAlign="center"
+              />
+            ))}
+          </View>
+        </View>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={handleContinue}
+          activeOpacity={0.85}
+        >
+          <Text style={styles.buttonText}>Continue</Text>
+        </TouchableOpacity>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
   container: {
     flex: 1,
     backgroundColor: colors.background,
@@ -177,20 +183,19 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     marginBottom: 28,
   },
-  // FIX: Purana gap: 10 hata kar, space-between aur width 100% laga diya
   otpRow: {
     flexDirection: "row",
-    gap: 12, // Ye har dabbe ke beech perfect spacing dega
+    gap: 12,
     width: "100%",
   },
   inner: {
     flex: 1,
     paddingHorizontal: 24,
-    paddingTop: 20,
+    paddingTop: 8,
   },
   otpBox: {
-    flex: 1, // Ye har dabbe ko screen ke hisaab se equal width dega
-    aspectRatio: 1, // Ye Brahamastra hai! Ye width jitni hogi, height bhi utni hi kar dega (Perfect Square 🔲)
+    flex: 1,
+    aspectRatio: 1,
     borderWidth: 1,
     borderColor: colors.border,
     borderRadius: 10,
@@ -198,7 +203,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: colors.textPrimary,
     backgroundColor: colors.background,
-    textAlign: "center", 
+    textAlign: "center",
   },
   otpBoxFilled: {
     borderColor: colors.borderFocused,

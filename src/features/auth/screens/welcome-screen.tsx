@@ -1,12 +1,11 @@
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Image } from "expo-image";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { AuthStackParamList } from "@/navigation/types";
-import { colors } from "@/theme";
-import { spacing } from "@/theme";
-import { typography } from "@/theme";
+import { colors, spacing, typography } from "@/theme";
 
 type WelcomeNavProp = NativeStackNavigationProp<AuthStackParamList, "Welcome">;
 
@@ -14,18 +13,24 @@ export default function WelcomeScreen() {
   const navigation = useNavigation<WelcomeNavProp>();
 
   return (
-    <View style={styles.container}>
-      <Image
-        source={require("../../../../assets/ready.png")}
-        style={styles.logo}
-        cachePolicy="memory-disk"
-      />
+    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+      <View style={styles.topSection}>
+        <Image
+          source={require("../../../../assets/ready.png")}
+          style={styles.logo}
+          cachePolicy="memory-disk"
+          contentFit="contain"
+        />
+      </View>
 
-      <Image
-        source={require("../../../../assets/welcome.png")}
-        style={styles.illustration}
-        cachePolicy="memory-disk"
-      />
+      <View style={styles.middleSection}>
+        <Image
+          source={require("../../../../assets/welcome.png")}
+          style={styles.illustration}
+          cachePolicy="memory-disk"
+          contentFit="contain"
+        />
+      </View>
 
       <View style={styles.bottomSection}>
         <TouchableOpacity
@@ -43,7 +48,7 @@ export default function WelcomeScreen() {
           <Text style={styles.link}>privacy policy</Text>
         </Text>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -51,61 +56,53 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
-    alignItems: "center",
-    paddingHorizontal: 24,
-    paddingTop: 48,
-    paddingBottom: 32,
+    paddingHorizontal: spacing.l,
     justifyContent: "space-between",
   },
+  topSection: {
+    alignItems: "center",
+    marginTop: spacing.xl,
+  },
   logo: {
-    width: 180,
-    height: 60,
+    width: 140,
+    height: 44,
+  },
+  middleSection: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
   illustration: {
-    width: 300,
-    height: 300,
+    width: 320,
+    height: 320,
   },
-  taglineContainer: {
-    alignItems: "center",
-  },
-  taglineBlack: {
-    fontSize: typography.sizes.xl,
-    fontWeight: "700",
-    color: colors.textPrimary,
-    textAlign: "center",
-    lineHeight: 32,
-  },
-  taglineOrange: {
-    fontSize: typography.sizes.xl,
-    fontWeight: "700",
-    color: colors.primary,
-    textAlign: "center",
-    lineHeight: 32,
+  bottomSection: {
+    width: "100%",
+    gap: spacing.m,
+    marginBottom: spacing.xl,
   },
   button: {
     width: "100%",
     backgroundColor: colors.buttonPrimary,
-    borderRadius: 14,
-    paddingVertical: 16,
+    borderRadius: spacing.buttonRadius || 14,
+    paddingVertical: spacing.m,
     alignItems: "center",
   },
   buttonText: {
     color: colors.buttonPrimaryText,
-    fontSize: 16,
-    fontWeight: "600",
+    fontSize: typography.sizes.m,
+    fontFamily: typography.fonts.inter.semiBold,
   },
   disclaimer: {
-    fontSize: 12,
+    fontSize: typography.sizes.xs,
     color: colors.textSecondary,
     textAlign: "center",
     lineHeight: 18,
+    fontFamily: typography.fonts.inter.normal,
   },
   link: {
-    color: colors.textLink,
+    color: colors.textPrimary,
     textDecorationLine: "underline",
-  },
-  bottomSection: {
-    width: "100%",
-    gap: 16,
+    fontFamily: typography.fonts.inter.medium,
   },
 });

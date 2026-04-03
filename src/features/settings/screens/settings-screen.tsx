@@ -1,4 +1,3 @@
-import React from "react";
 import {
   View,
   Text,
@@ -8,6 +7,7 @@ import {
 } from "react-native";
 import { Image } from "expo-image";
 import { useNavigation } from "@react-navigation/native";
+import { Feather } from "@expo/vector-icons";
 import { colors, palette } from "@/theme/colors";
 import { spacing } from "@/theme/spacing";
 import { typography } from "@/theme/typography";
@@ -20,56 +20,24 @@ interface User {
   avatarUrl: string;
 }
 
-interface MenuItem {
-  label: string;
-  value?: string;
-  onPress: () => void;
-  showChevron?: boolean;
-  rightIcon?: string;
-}
-
 const user = userData as User;
 
 export default function SettingsScreen() {
   const navigation = useNavigation();
 
-  const handleLogout = () => {
-    navigation.navigate("Auth" as never);
-  };
-
-  const infoItems: MenuItem[] = [
-    {
-      label: "Phone number",
-      value: user.phone,
-      onPress: () => {},
-    },
-    {
-      label: "Learning since",
-      value: "August 17, 2025",
-      onPress: () => {},
-    },
+  const infoItems = [
+    { label: "Phone number", value: user.phone, icon: <Feather name="phone" size={20} color={colors.textSecondary} /> },
+    { label: "Learning since", value: "August 17, 2025", icon: <Feather name="clock" size={20} color={colors.textSecondary} /> },
   ];
 
-  const menuItems: MenuItem[] = [
-    {
-      label: "Chat with us",
-      onPress: () => {},
-      showChevron: true,
-    },
-    {
-      label: "Share the app",
-      onPress: () => {},
-      showChevron: true,
-    },
-    {
-      label: "Rate the app",
-      onPress: () => {},
-      showChevron: true,
-    },
+  const menuItems = [
+    { label: "Chat with us", icon: <Feather name="message-square" size={20} color={colors.textSecondary} />, onPress: () => {} },
+    { label: "Share the app", icon: <Feather name="share" size={20} color={colors.textSecondary} />, onPress: () => {} },
+    { label: "Rate the app", icon: <Feather name="star" size={20} color={colors.textSecondary} />, onPress: () => {} },
     {
       label: "Log out",
-      onPress: handleLogout,
-      showChevron: true,
+      icon: <Feather name="log-out" size={20} color={colors.textSecondary} />,
+      onPress: () => navigation.navigate("Auth" as never),
     },
   ];
 
@@ -79,38 +47,39 @@ export default function SettingsScreen() {
       contentContainerStyle={styles.scrollContent}
       showsVerticalScrollIndicator={false}
     >
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={() => navigation.goBack()}
-      >
-        <Text style={styles.backText}>‹</Text>
-      </TouchableOpacity>
-
-      <Text style={styles.pageTitle}>Your Profile</Text>
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+          activeOpacity={0.7}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <Feather name="chevron-left" size={28} color={colors.textPrimary} />
+        </TouchableOpacity>
+        
+        <Text style={styles.pageTitle}>Your Profile</Text>
+        
+        <View style={{ width: 28 }} />
+      </View>
 
       <View style={styles.trialCard}>
-        <View style={styles.trialTextBlock}>
-          <Text style={styles.trialHeading}>3 days free trial for</Text>
-          <Text style={styles.trialPrice}>₹1</Text>
-          <Text style={styles.trialSub}>Then ₹299/month</Text>
-          <TouchableOpacity style={styles.trialButton}>
-            <Text style={styles.trialButtonText}>START 3 DAYS TRIAL @ ₹1</Text>
-          </TouchableOpacity>
-        </View>
         <Image
           source={require("../../../../assets/trial.png")}
           style={styles.trialImage}
           cachePolicy="memory-disk"
+          contentFit="cover"
         />
       </View>
 
       <View style={styles.card}>
         <View style={styles.updateRow}>
-          <Text style={styles.menuIcon}>⊞</Text>
+          <View style={styles.rowIconContainer}>
+            <Feather name="grid" size={20} color={colors.textSecondary} />
+          </View>
           <Text style={styles.updateText}>New update available</Text>
-          <TouchableOpacity style={styles.updateBadge}>
-            <Text style={styles.updateIcon}>↓</Text>
-          </TouchableOpacity>
+          <View style={styles.updateBadge}>
+            <Feather name="arrow-down" size={14} color={colors.success} />
+          </View>
         </View>
       </View>
 
@@ -118,6 +87,7 @@ export default function SettingsScreen() {
         {infoItems.map((item, index) => (
           <View key={item.label}>
             <View style={styles.menuRow}>
+              <View style={styles.rowIconContainer}>{item.icon}</View>
               <Text style={styles.menuLabel}>{item.label}</Text>
               <Text style={styles.menuValue}>{item.value}</Text>
             </View>
@@ -129,9 +99,10 @@ export default function SettingsScreen() {
       <View style={styles.card}>
         {menuItems.map((item, index) => (
           <View key={item.label}>
-            <TouchableOpacity style={styles.menuRow} onPress={item.onPress}>
+            <TouchableOpacity style={styles.menuRow} onPress={item.onPress} activeOpacity={0.7}>
+              <View style={styles.rowIconContainer}>{item.icon}</View>
               <Text style={styles.menuLabel}>{item.label}</Text>
-              {item.showChevron && <Text style={styles.chevron}>›</Text>}
+              <Feather name="chevron-right" size={20} color={colors.textSecondary} />
             </TouchableOpacity>
             {index < menuItems.length - 1 && <View style={styles.divider} />}
           </View>
@@ -156,69 +127,30 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.xxxl,
     paddingTop: spacing.l,
   },
-  backButton: {
-    marginBottom: spacing.xs,
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: spacing.l,
   },
-  backText: {
-    fontSize: typography.sizes.xxxl,
-    color: colors.textPrimary,
-    lineHeight: typography.sizes.xxxl,
+  backButton: {
+    padding: spacing.s,
   },
   pageTitle: {
     fontSize: typography.sizes.l,
     fontFamily: typography.fonts.inter.semiBold,
     color: colors.textPrimary,
-    textAlign: "center",
-    marginBottom: spacing.l,
-    marginTop: -spacing.xl,
   },
   trialCard: {
-    backgroundColor: palette.gray90,
     borderRadius: spacing.cardRadius,
-    padding: spacing.m,
-    flexDirection: "row",
-    alignItems: "center",
     marginBottom: spacing.m,
+    overflow: "hidden",
     borderWidth: 2,
-    borderColor: "#7C3AED",
-  },
-  trialTextBlock: {
-    flex: 1,
-    gap: spacing.xxs,
-  },
-  trialHeading: {
-    fontSize: typography.sizes.s,
-    color: colors.textInverse,
-    fontFamily: typography.fonts.inter.normal,
-  },
-  trialPrice: {
-    fontSize: typography.sizes.xxxl,
-    color: palette.orange40,
-    fontFamily: typography.fonts.inter.bold,
-  },
-  trialSub: {
-    fontSize: typography.sizes.xs,
-    color: colors.textInverse,
-    fontFamily: typography.fonts.inter.normal,
-    marginBottom: spacing.s,
-  },
-  trialButton: {
-    backgroundColor: colors.background,
-    borderRadius: spacing.buttonRadius,
-    paddingVertical: spacing.xs,
-    paddingHorizontal: spacing.s,
-    alignSelf: "flex-start",
-  },
-  trialButtonText: {
-    fontSize: typography.sizes.xs,
-    fontFamily: typography.fonts.inter.bold,
-    color: palette.orange50,
-    letterSpacing: 0.5,
+    borderColor: palette.gray70,
   },
   trialImage: {
-    width: 110,
-    height: 130,
-    marginLeft: spacing.s,
+    width: "100%",
+    aspectRatio: 2.5,
   },
   card: {
     backgroundColor: colors.cardBackground,
@@ -246,22 +178,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  updateIcon: {
-    fontSize: typography.sizes.s,
-    color: colors.success,
-    fontFamily: typography.fonts.inter.bold,
-  },
   menuRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
     paddingVertical: spacing.m,
+    gap: spacing.s,
   },
-  menuIcon: {
-    fontSize: typography.sizes.m,
-    color: colors.textSecondary,
+  rowIconContainer: {
+    width: spacing.xl,
+    alignItems: "flex-start",
+    justifyContent: "center",
   },
   menuLabel: {
+    flex: 1,
     fontSize: typography.sizes.s,
     fontFamily: typography.fonts.inter.medium,
     color: colors.textPrimary,
@@ -271,13 +200,10 @@ const styles = StyleSheet.create({
     fontFamily: typography.fonts.inter.normal,
     color: colors.textSecondary,
   },
-  chevron: {
-    fontSize: typography.sizes.xl,
-    color: colors.textSecondary,
-  },
   divider: {
     height: 1,
     backgroundColor: colors.border,
+    marginLeft: spacing.xl + spacing.s,
   },
   footer: {
     alignItems: "center",
