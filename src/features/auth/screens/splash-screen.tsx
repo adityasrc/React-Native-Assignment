@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 // //static type definations react navigation me use hota hai
 import {StyleSheet, View } from 'react-native';
 import { Image } from 'expo-image';
+import { colors } from '@/theme';
 
 
 export default function SplashScreen() {
@@ -32,7 +33,7 @@ export default function SplashScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#ffff',
+        backgroundColor: "colors.white",
         alignItems: "center",
         justifyContent: 'center',
     },
