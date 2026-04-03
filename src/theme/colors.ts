@@ -73,6 +73,13 @@ export const colors = {
   cardBackground: palette.white,
   cardBorder: palette.gray30,
 
+  backgroundCard1: palette.green20,
+  backgroundCard2: palette.orange20,
+  numberBadge1: palette.green50,
+  numberBadge2: palette.orange40,
+  numberBadgeDefault: palette.gray40,
+  notifBadgeBg: palette.green40,
+
   // Button
   buttonPrimary: palette.orange50,
   buttonPrimaryText: palette.white,

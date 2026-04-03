@@ -4,11 +4,14 @@ import LoginScreen from '@/features/auth/screens/login-screen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const AuthStack = createNativeStackNavigator({
-  screens: {
-    Splash: SplashScreen,
-    Welcome: WelcomeScreen,
-    Login: LoginScreen,
-  },
+    screenOptions: {
+        headerShown: false,
+    },
+    screens: {
+        Splash: SplashScreen,
+        Welcome: WelcomeScreen,
+        Login: LoginScreen,
+    },
 });
 
 export default AuthStack;

@@ -1,4 +1,17 @@
-import type { StaticParamList } from '@react-navigation/native';
-import  AuthStack from '../navigation/auth-navigator';
+export type AuthStackParamList = {
+    Splash: undefined;
+    Welcome: undefined;
+    Login: undefined;
+};
 
-type RootStackParamList = StaticParamList<typeof AuthStack>;
+export type MainTabParamList = {
+    Home: undefined;
+    Settings: undefined;
+    Store: undefined;
+};
+
+export type RootStackParamList = {
+    AuthStack: undefined;
+    MainTabs: undefined;
+    SessionResult: undefined;
+};
